@@ -1,21 +1,23 @@
 import boto3
 import json
+import os
 
-dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.client('dynamodb')
 
 
 def record(event, context):
+    print('EVENT:')
+    print(event)
     data = json.loads(event['body'])
     if 'siteUrl' not in data:
         logging.error("Validation Failed")
         raise Exception("siteUrl missing")
         return
 
-    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
-
     operation_res = dynamodb.update_item(
+        TableName=os.environ['DYNAMODB_TABLE'],
         Key={
-            'siteUrl':{'S': event['body']['siteUrl']}
+            'siteUrl':{'S': data['siteUrl']}
         },
         UpdateExpression='ADD siteHits :inc',
         ExpressionAttributeValues={
@@ -23,10 +25,13 @@ def record(event, context):
         },
         ReturnValues="UPDATED_NEW"
     )
+    
+    print(type(operation_res['Attributes']['siteHits']['N']))
+    print(operation_res['Attributes']['siteHits']['N'])
 
     item = {
-        event['body']['siteUrl'],
-        operation_res['siteHits']
+        "siteUrl": data['siteUrl'],
+        "siteHits": operation_res['Attributes']['siteHits']['N']
     }
 
     # Create a response

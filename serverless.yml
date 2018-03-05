@@ -42,13 +42,9 @@ resources:
         AttributeDefinitions:
           - AttributeName: siteUrl
             AttributeType: S
-          - AttributeName: siteHits
-            AttributeType: N
         KeySchema:
           - AttributeName: siteUrl
             KeyType: HASH
-          - AttributeName: siteHits
-            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
