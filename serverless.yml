@@ -46,8 +46,8 @@ resources:
           - AttributeName: siteUrl
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
 
 package:
